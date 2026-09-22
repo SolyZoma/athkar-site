@@ -2,7 +2,6 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <!-- وسم الـ Viewport لضبط مقاسات الشاشة على الموبايل -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أذكاري - صدقة جارية</title>
     <style>
@@ -51,9 +50,23 @@
         pre {
             font-family: Tahoma, sans-serif;
             white-space: pre-wrap; 
-            font-size: 17px; /* تكبير خط الأذكار لتسهيل القراءة على الموبايل */
+            font-size: 17px; 
             line-height: 1.8; 
             color: #222;
+        }
+        /* تصميم خاص لبطاقة الذكر المتجدد التلقائي */
+        .daily-athkar {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            text-align: center;
+        }
+        .daily-athkar h2 {
+            color: #f1c40f;
+        }
+        .daily-athkar pre {
+            color: white;
+            font-weight: bold;
+            font-size: 19px;
         }
         footer {
             margin-top: 20px;
@@ -68,6 +81,12 @@
     </header>
 
     <main>
+        <!-- قسم الذكر المتجدد تلقائياً بجافاسكريبت -->
+        <section class="daily-athkar">
+            <h2>✨ ذكر اللحظة (متجدد تلقائياً)</h2>
+            <pre id="random-athkar">جاري تحميل الذكر...</pre>
+        </section>
+
         <!-- قسم أذكار الصباح -->
         <section>
             <h2>☀️ أذكار الصباح</h2>
@@ -100,8 +119,31 @@
     </main>
 
     <footer>
-        <p style="color: #777; font-size: 14px;">نسألكم الدعاء بالتوفيق الدائم</p>
+        <p style="color: #777; font-size: 14px;">نسألكم الدعاء بظهر الغيب</p>
     </footer>
+
+    <!-- كود الجافاسكريبت لتغيير الأذكار تلقائياً -->
+    <script>
+        // مصفوفة تحتوي على مجموعة أذكار متنوعة وجميلة
+        const athkarList = [
+            "سبحان الله وبحمده، سبحان الله العظيم.",
+            "لا إله إلا الله وحدَهُ لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.",
+            "استغفر الله العظيم واتوب إليه.",
+            "اللهم صل وسلم على نبينا محمد وعلى آله وصحبه أجمعين.",
+            "لاحول ولا قوة إلا بالله العلي العظيم.",
+            "سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر.",
+            "رضيت بالله رباً، وبالإسلام ديناً، وبمحمد صلى الله عليه وسلم نبياً."
+        ];
+
+        // اختيار ذكر عشوائي عند فتح الصفحة
+        function displayRandomAthkar() {
+            const randomIndex = Math.floor(Math.random() * athkarList.length);
+            document.getElementById("random-athkar").innerText = athkarList[randomIndex];
+        }
+
+        // تشغيل الدالة فور فتح الصفحة
+        displayRandomAthkar();
+    </script>
 
 </body>
 </html>

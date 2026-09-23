@@ -44,7 +44,6 @@
             border-bottom: 1px solid rgba(255,255,255,0.2);
             padding-bottom: 8px;
         }
-        /* جملة تحفيزية خالية تماماً من النقاط */
         .motivation-text {
             font-size: 14px;
             color: #f1c40f;
@@ -73,7 +72,7 @@
             justify-content: center;
             border: 1px solid rgba(255,255,255,0.15);
         }
-        /* تصميم شريط الساعة الآن داخل صندوق الصلاة القادمة بالأعلى */
+        /* تصميم شريط الساعة الآن بدون أيقونة وبترتيب صحيح */
         .live-clock-inner {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 6px;
@@ -114,14 +113,19 @@
             unicode-bidi: bidi-override;
             text-align: center;
         }
+        /* تنسيق العداد لمنع انعكاس كلمة بعد */
         .countdown {
             font-size: 19px;
-            font-family: monospace;
-            color: #2ecc71;
             font-weight: bold;
+            color: #2ecc71;
+            text-align: center;
+            direction: rtl;
+        }
+        .time-digits {
+            font-family: monospace;
             direction: ltr;
             unicode-bidi: bidi-override;
-            text-align: center;
+            display: inline-block;
         }
         /* جدول مواقيت الصلوات */
         .prayer-times-list {
@@ -217,11 +221,11 @@
             <div id="motivation-text" class="motivation-text">جاري التحميل...</div>
             
             <div class="prayer-grid">
-                <!-- صندوق الصلاة القادمة وبداخله الساعة الآن في الأعلى -->
+                <!-- صندوق الصلاة القادمة وبداخله الساعة الآن -->
                 <div class="next-prayer-box">
-                    <!-- الساعة الآن في أعلى صندوق الصلاة القادمة -->
+                    <!-- الساعة الآن (الاسم يمين الوقت يسار بدون أيقونة) -->
                     <div class="live-clock-inner">
-                        <span>⏰ الساعة الان:</span>
+                        <span>الساعة الان</span>
                         <span id="current-digital-clock" class="live-clock-time">--:--:--</span>
                     </div>
 
@@ -344,7 +348,6 @@
         function updateClocks() {
             const now = new Date();
 
-            // 1. تحديث الساعة الرقمية الحالية مع اتجاه صحيح
             let currentHours = now.getHours();
             let currentMinutes = now.getMinutes();
             let currentSeconds = now.getSeconds();
@@ -427,8 +430,8 @@
                 const passedMinutes = Math.floor((timeSinceAthan % (1000 * 60 * 60)) / (1000 * 60));
                 const passedSeconds = Math.floor((timeSinceAthan % (1000 * 60)) / 1000);
 
-                document.getElementById('countdown-timer').innerText = 
-                    `+ ${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}`;
+                document.getElementById('countdown-timer').innerHTML = 
+                    `+ <span class="time-digits">${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}</span>`;
 
             } else if (nextPrayerKey) {
                 const rowElem = document.getElementById(`row-${nextPrayerKey}`);
@@ -445,8 +448,8 @@
                 const minutesLeft = Math.floor((minDiff % (1000 * 60 * 60)) / (1000 * 60));
                 const secondsLeft = Math.floor((minDiff % (1000 * 60)) / 1000);
 
-                document.getElementById('countdown-timer').innerText = 
-                    `بعد ${String(hoursLeft).padStart(2, '0')}:${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}`;
+                document.getElementById('countdown-timer').innerHTML = 
+                    `بعد <span class="time-digits">${String(hoursLeft).padStart(2, '0')}:${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}</span>`;
             }
         }
 

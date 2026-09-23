@@ -44,7 +44,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.2);
             padding-bottom: 8px;
         }
-        /* جملة تحفيزية للصلاة تتغير حسب الصلاة */
+        /* جملة تحفيزية للصلاة بدون نقطة في البداية أو النهاية */
         .motivation-text {
             font-size: 14px;
             color: #f1c40f;
@@ -60,7 +60,7 @@
             gap: 10px;
             justify-content: space-between;
         }
-        /* صندوق الصلاة القادمة (أكبر وأوضح وبخط عريض) */
+        /* صندوق الصلاة القادمة */
         .next-prayer-box {
             flex: 1;
             min-width: 240px;
@@ -90,7 +90,8 @@
             color: #f39c12;
             font-weight: bold;
             margin-bottom: 8px;
-            direction: ltr; /* لضمان ظهور ص/م يسار الوقت بشكل صحيح */
+            direction: ltr;
+            text-align: center;
         }
         .countdown {
             font-size: 20px;
@@ -116,8 +117,9 @@
             border-radius: 6px;
             transition: background 0.3s;
         }
-        .prayer-row span:last-child {
-            direction: ltr; /* جعل ص أو م يسار الأرقام */
+        .prayer-time-text {
+            direction: ltr;
+            unicode-bidi: embed;
             font-weight: bold;
         }
         .prayer-row:last-child {
@@ -188,7 +190,7 @@
         <div class="prayer-container">
             <div class="prayer-header">🕌 مواقيت الصلاة (الإسكندرية)</div>
             
-            <!-- جملة تحفيزية تتغير حسب الصلاة القادمة -->
+            <!-- جملة تحفيزية بدون نقاط -->
             <div id="motivation-text" class="motivation-text">جاري التحميل...</div>
             
             <div class="prayer-grid">
@@ -201,12 +203,12 @@
                 </div>
                 <!-- جدول الأوقات -->
                 <div class="prayer-times-list" id="times-list">
-                    <div class="prayer-row" id="row-Fajr"><span>الفجر</span><span id="Fajr">--:--</span></div>
-                    <div class="prayer-row" id="row-Sunrise"><span>الشروق</span><span id="Sunrise">--:--</span></div>
-                    <div class="prayer-row" id="row-Dhuhr"><span>الظهر</span><span id="Dhuhr">--:--</span></div>
-                    <div class="prayer-row" id="row-Asr"><span>العصر</span><span id="Asr">--:--</span></div>
-                    <div class="prayer-row" id="row-Maghrib"><span>المغرب</span><span id="Maghrib">--:--</span></div>
-                    <div class="prayer-row" id="row-Isha"><span>العشاء</span><span id="Isha">--:--</span></div>
+                    <div class="prayer-row" id="row-Fajr"><span>الفجر</span><span class="prayer-time-text" id="Fajr">--:--</span></div>
+                    <div class="prayer-row" id="row-Sunrise"><span>الشروق</span><span class="prayer-time-text" id="Sunrise">--:--</span></div>
+                    <div class="prayer-row" id="row-Dhuhr"><span>الظهر</span><span class="prayer-time-text" id="Dhuhr">--:--</span></div>
+                    <div class="prayer-row" id="row-Asr"><span>العصر</span><span class="prayer-time-text" id="Asr">--:--</span></div>
+                    <div class="prayer-row" id="row-Maghrib"><span>المغرب</span><span class="prayer-time-text" id="Maghrib">--:--</span></div>
+                    <div class="prayer-row" id="row-Isha"><span>العشاء</span><span class="prayer-time-text" id="Isha">--:--</span></div>
                 </div>
             </div>
         </div>
@@ -243,14 +245,13 @@
     </footer>
 
     <script>
-        // سكريبت الأذكار المتغيرة
         const athkarList = [
-            "سبحان الله وبحمده، سبحان الله العظيم.",
-            "لا إله إلا الله وحدَهُ لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.",
-            "استغفر الله العظيم واتوب إليه.",
-            "اللهم صل وسلم على نبينا محمد وعلى آله وصحبه أجمعين.",
-            "لاحول ولا قوة إلا بالله العلي العظيم.",
-            "سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر."
+            "سبحان الله وبحمده، سبحان الله العظيم",
+            "لا إله إلا الله وحدَهُ لا شريك له، له الملك وله الحمد وهو على كل شيء قدير",
+            "استغفر الله العظيم واتوب إليه",
+            "اللهم صل وسلم على نبينا محمد وعلى آله وصحبه أجمعين",
+            "لاحول ولا قوة إلا بالله العلي العظيم",
+            "سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر"
         ];
 
         function displayRandomAthkar() {
@@ -260,19 +261,19 @@
         displayRandomAthkar();
         setInterval(displayRandomAthkar, 15000);
 
-        // الجمل التحفيزية الخاصة بكل صلاة
+        // جمل تحفيزية خالية تماماً من النقاط في البداية والنهاية
         const motivations = {
-            Fajr: "🌅 ركعتا الفجر خير من الدنيا وما فيها.. إبدأ يومك بطاعة الله تنر بصيرتك.",
-            Sunrise: "☀️ اذكر الله واحمده على نعمة يوم جديد وعمر ممدود.",
-            Dhuhr: "⏳ استعن على صخب العمل بصلاة الظهر، فنحن بحاجة لرحمة الله وسط اليوم.",
-            Asr: "حافظ على صلاة العصر فإن من تركها فقد حبط عمله.. كن من المحافظين.",
-            Maghrib: "🌇 مع غروب الشمس، أقبل على صلاة المغرب بقلب خاشع مستغفر.",
-            Isha: "🌙 اختم يومك بسكينة صلاة العشاء وقيام الليل لتنام في حفظ الله ورعايته."
+            Fajr: "ركعتا الفجر خير من الدنيا وما فيها، إبدأ يومك بطاعة الله تنر بصيرتك",
+            Sunrise: "اذكر الله واحمده على نعمة يوم جديد وعمر ممدود",
+            Dhuhr: "استعن على صخب العمل بصلاة الظهر، فنحن بحاجة لرحمة الله وسط اليوم",
+            Asr: "حافظ على صلاة العصر فإن من تركها فقد حبط عمله، كن من المحافظين",
+            Maghrib: "مع غروب الشمس، أقبل على صلاة المغرب بقلب خاشع مستغفر",
+            Isha: "اختم يومك بسكينة صلاة العشاء وقيام الليل لتنام في حفظ الله ورعايته"
         };
 
         let prayersData = {};
 
-        // تحويل الوقت لنظام 12 ساعة مع جعل (ص / م) على اليسار
+        // ضبط تنسيق الوقت بحيث يكون الحرف (ص/م) دائماً على اليسار بجوار الرقم
         function format12Hour(time24) {
             if (!time24) return "--:--";
             let [hours, minutes] = time24.split(':').map(Number);
@@ -326,7 +327,6 @@
 
                 let diff = prayerDate - now;
 
-                // إذا دخل وقت الأذان (خلال أول دقيقة 60 ثانية)
                 if (diff <= 0 && diff >= -60000) {
                     nextPrayerKey = key;
                     isAthanTime = true;
@@ -353,25 +353,20 @@
                 minDiff = prayerDate - now;
             }
 
-            // إزالة التظليل القديم من كل الصفوف
             document.querySelectorAll('.prayer-row').forEach(row => row.classList.remove('active-prayer-row'));
             
-            // تظليل الصلاة القادمة في الجدول
             if (nextPrayerKey) {
                 const rowElem = document.getElementById(`row-${nextPrayerKey}`);
                 if (rowElem) rowElem.classList.add('active-prayer-row');
                 
-                // تحديث بيانات الصلاة القادمة
                 document.getElementById('next-prayer-name').innerText = prayersData[nextPrayerKey].name;
                 document.getElementById('next-prayer-time').innerText = format12Hour(prayersData[nextPrayerKey].time);
                 
-                // تحديث الجملة التحفيزية المرتبطة بالصلاة القادمة
                 if (motivations[nextPrayerKey]) {
                     document.getElementById('motivation-text').innerText = motivations[nextPrayerKey];
                 }
             }
 
-            // التعامل مع حالة الأذان (الآن) أو العد التنازلي
             if (isAthanTime) {
                 document.getElementById('countdown-timer').innerText = "الآن 🕌";
             } else {

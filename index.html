@@ -44,7 +44,7 @@
             border-bottom: 1px solid rgba(255,255,255,0.2);
             padding-bottom: 8px;
         }
-        /* جملة تحفيزية للصلاة بدون نقطة في البداية أو النهاية */
+        /* جملة تحفيزية خالية تماماً من النقاط */
         .motivation-text {
             font-size: 14px;
             color: #f1c40f;
@@ -91,6 +91,7 @@
             font-weight: bold;
             margin-bottom: 8px;
             direction: ltr;
+            unicode-bidi: bidi-override;
             text-align: center;
         }
         .countdown {
@@ -117,10 +118,12 @@
             border-radius: 6px;
             transition: background 0.3s;
         }
-        .prayer-time-text {
+        /* تنسيق الوقت لضمان ظهور ص أو م في اليسار تماماً وبشكل صحيح */
+        .prayer-time-box {
             direction: ltr;
-            unicode-bidi: embed;
+            unicode-bidi: bidi-override;
             font-weight: bold;
+            display: inline-block;
         }
         .prayer-row:last-child {
             border-bottom: none;
@@ -190,7 +193,7 @@
         <div class="prayer-container">
             <div class="prayer-header">🕌 مواقيت الصلاة (الإسكندرية)</div>
             
-            <!-- جملة تحفيزية بدون نقاط -->
+            <!-- جملة تحفيزية خالية من النقاط -->
             <div id="motivation-text" class="motivation-text">جاري التحميل...</div>
             
             <div class="prayer-grid">
@@ -203,12 +206,12 @@
                 </div>
                 <!-- جدول الأوقات -->
                 <div class="prayer-times-list" id="times-list">
-                    <div class="prayer-row" id="row-Fajr"><span>الفجر</span><span class="prayer-time-text" id="Fajr">--:--</span></div>
-                    <div class="prayer-row" id="row-Sunrise"><span>الشروق</span><span class="prayer-time-text" id="Sunrise">--:--</span></div>
-                    <div class="prayer-row" id="row-Dhuhr"><span>الظهر</span><span class="prayer-time-text" id="Dhuhr">--:--</span></div>
-                    <div class="prayer-row" id="row-Asr"><span>العصر</span><span class="prayer-time-text" id="Asr">--:--</span></div>
-                    <div class="prayer-row" id="row-Maghrib"><span>المغرب</span><span class="prayer-time-text" id="Maghrib">--:--</span></div>
-                    <div class="prayer-row" id="row-Isha"><span>العشاء</span><span class="prayer-time-text" id="Isha">--:--</span></div>
+                    <div class="prayer-row" id="row-Fajr"><span>الفجر</span><span class="prayer-time-box" id="Fajr">--:--</span></div>
+                    <div class="prayer-row" id="row-Sunrise"><span>الشروق</span><span class="prayer-time-box" id="Sunrise">--:--</span></div>
+                    <div class="prayer-row" id="row-Dhuhr"><span>الظهر</span><span class="prayer-time-box" id="Dhuhr">--:--</span></div>
+                    <div class="prayer-row" id="row-Asr"><span>العصر</span><span class="prayer-time-box" id="Asr">--:--</span></div>
+                    <div class="prayer-row" id="row-Maghrib"><span>المغرب</span><span class="prayer-time-box" id="Maghrib">--:--</span></div>
+                    <div class="prayer-row" id="row-Isha"><span>العشاء</span><span class="prayer-time-box" id="Isha">--:--</span></div>
                 </div>
             </div>
         </div>
@@ -261,7 +264,6 @@
         displayRandomAthkar();
         setInterval(displayRandomAthkar, 10000);
 
-        // جمل تحفيزية خالية تماماً من النقاط في البداية والنهاية
         const motivations = {
             Fajr: "ركعتا الفجر خير من الدنيا وما فيها، إبدأ يومك بطاعة الله تنر بصيرتك",
             Sunrise: "اذكر الله واحمده على نعمة يوم جديد وعمر ممدود",
@@ -273,14 +275,15 @@
 
         let prayersData = {};
 
-        // ضبط تنسيق الوقت بحيث يكون الحرف (ص/م) دائماً على اليسار بجوار الرقم
+        // تنسيق يضمن ظهور حرف ص أو م في أقصى يسار الرقم تماماً وبشكل مرتب
         function format12Hour(time24) {
             if (!time24) return "--:--";
             let [hours, minutes] = time24.split(':').map(Number);
             let period = hours >= 12 ? 'م' : 'ص';
             hours = hours % 12;
             hours = hours ? hours : 12; 
-            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`;
+            // الترتيب هنا يجعل الحرف في بداية النص البرمجي لليسار ليظهر على يسار الرقم تماماً
+            return `${period} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
         }
 
         async function fetchPrayerTimes() {

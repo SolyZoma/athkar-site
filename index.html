@@ -28,7 +28,6 @@
             max-width: 650px;
             margin: 0 auto;
         }
-        /* تصميم قسم مواقيت الصلاة */
         .prayer-container {
             background: linear-gradient(135deg, #1b365d, #2c3e50);
             color: white;
@@ -59,7 +58,6 @@
             gap: 10px;
             justify-content: space-between;
         }
-        /* صندوق الصلاة القادمة */
         .next-prayer-box {
             flex: 1;
             min-width: 240px;
@@ -72,11 +70,11 @@
             justify-content: center;
             border: 1px solid rgba(255,255,255,0.15);
         }
-        /* تصميم شريط الساعة الآن بدون أيقونة وبترتيب صحيح */
+        /* ضبط اتجاه شريط الساعة الآن ليكون النص يميناً والوقت يساراً بوضوح */
         .live-clock-inner {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 6px;
-            padding: 6px 10px;
+            padding: 6px 12px;
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
@@ -84,6 +82,11 @@
             font-size: 15px;
             color: #fff;
             border-bottom: 1px solid rgba(255,255,255,0.15);
+            direction: ltr; /* فرض الاتجاه العام لضمان التموضع الصحيح للعناصر المرنة */
+        }
+        .live-clock-text {
+            direction: rtl;
+            unicode-bidi: embed;
         }
         .live-clock-time {
             font-family: monospace;
@@ -113,7 +116,6 @@
             unicode-bidi: bidi-override;
             text-align: center;
         }
-        /* تنسيق العداد لمنع انعكاس كلمة بعد */
         .countdown {
             font-size: 19px;
             font-weight: bold;
@@ -127,7 +129,6 @@
             unicode-bidi: bidi-override;
             display: inline-block;
         }
-        /* جدول مواقيت الصلوات */
         .prayer-times-list {
             flex: 1;
             min-width: 240px;
@@ -159,7 +160,6 @@
             border-right: 4px solid #f1c40f;
             font-weight: bold;
         }
-        /* بطاقات الأذكار */
         section {
             background: white;
             padding: 15px;
@@ -214,19 +214,17 @@
     </header>
 
     <main>
-        <!-- قسم مواقيت الصلاة والعد التنازلي -->
         <div class="prayer-container">
             <div class="prayer-header">🕌 مواقيت الصلاة (الإسكندرية)</div>
             
             <div id="motivation-text" class="motivation-text">جاري التحميل...</div>
             
             <div class="prayer-grid">
-                <!-- صندوق الصلاة القادمة وبداخله الساعة الآن -->
                 <div class="next-prayer-box">
-                    <!-- الساعة الآن (الاسم يمين الوقت يسار بدون أيقونة) -->
+                    <!-- تم ضبط الترتيب: الساعة الان يميناً، والوقت يساراً -->
                     <div class="live-clock-inner">
-                        <span>الساعة الان</span>
-                        <span id="current-digital-clock" class="live-clock-time">--:--:--</span>
+                        <span class="live-clock-time" id="current-digital-clock">--:--:--</span>
+                        <span class="live-clock-text">الساعة الان</span>
                     </div>
 
                     <h3>الصلاة القادمة</h3>
@@ -234,7 +232,7 @@
                     <div id="next-prayer-time" class="next-time-val">--:--</div>
                     <div id="countdown-timer" class="countdown">--:--:--</div>
                 </div>
-                <!-- جدول الأوقات -->
+
                 <div class="prayer-times-list" id="times-list">
                     <div class="prayer-row" id="row-Fajr"><span>الفجر</span><span class="prayer-time-box" id="Fajr">--:--</span></div>
                     <div class="prayer-row" id="row-Sunrise"><span>الشروق</span><span class="prayer-time-box" id="Sunrise">--:--</span></div>
@@ -246,13 +244,11 @@
             </div>
         </div>
 
-        <!-- قسم الذكر المتجدد تلقائياً -->
         <section class="daily-athkar">
             <h2> ذكر اللحظة (يتجدد تلقائياً)</h2>
             <pre id="random-athkar">جاري تحميل الذكر...</pre>
         </section>
 
-        <!-- قسم أذكار الصباح -->
         <section>
             <h2>☀️ أذكار الصباح</h2>
             <pre>
@@ -262,7 +258,6 @@
             </pre>
         </section>
 
-        <!-- قسم أذكار المساء -->
         <section>
             <h2>🌙 أذكار المساء</h2>
             <pre>

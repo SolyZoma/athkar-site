@@ -28,6 +28,28 @@
             max-width: 650px;
             margin: 0 auto;
         }
+        /* تصميم قسم الوقت الحالي */
+        .current-clock-box {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .current-time-val {
+            font-family: monospace;
+            color: #f1c40f;
+            font-size: 20px;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
         /* تصميم قسم مواقيت الصلاة */
         .prayer-container {
             background: linear-gradient(135deg, #1b365d, #2c3e50);
@@ -99,6 +121,8 @@
             font-family: monospace;
             color: #2ecc71;
             font-weight: bold;
+            direction: ltr;
+            unicode-bidi: bidi-override;
         }
         /* جدول مواقيت الصلوات */
         .prayer-times-list {
@@ -189,6 +213,12 @@
     </header>
 
     <main>
+        <!-- قسم الوقت الحالي الرقمي -->
+        <div class="current-clock-box">
+            <span>⏰ الوقت الحالي:</span>
+            <span id="current-digital-clock" class="current-time-val">--:--:--</span>
+        </div>
+
         <!-- قسم مواقيت الصلاة والعد التنازلي -->
         <div class="prayer-container">
             <div class="prayer-header">🕌 مواقيت الصلاة (الإسكندرية)</div>
@@ -275,14 +305,12 @@
 
         let prayersData = {};
 
-        // تنسيق يضمن ظهور حرف ص أو م في أقصى يسار الرقم تماماً وبشكل مرتب
         function format12Hour(time24) {
             if (!time24) return "--:--";
             let [hours, minutes] = time24.split(':').map(Number);
             let period = hours >= 12 ? 'م' : 'ص';
             hours = hours % 12;
             hours = hours ? hours : 12; 
-            // الترتيب هنا يجعل الحرف في بداية النص البرمجي لليسار ليظهر على يسار الرقم تماماً
             return `${period} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
         }
 
@@ -308,8 +336,8 @@
                 document.getElementById('Maghrib').innerText = format12Hour(timings.Maghrib);
                 document.getElementById('Isha').innerText = format12Hour(timings.Isha);
 
-                updateCountdown();
-                setInterval(updateCountdown, 1000);
+                updateClocks();
+                setInterval(updateClocks, 1000);
 
             } catch (error) {
                 console.log("خطأ في جلب المواقيت", error);
@@ -317,12 +345,27 @@
             }
         }
 
-        function updateCountdown() {
+        function updateClocks() {
             const now = new Date();
+
+            // 1. تحديث الساعة الرقمية الحالية
+            let currentHours = now.getHours();
+            let currentMinutes = now.getMinutes();
+            let currentSeconds = now.getSeconds();
+            let currentPeriod = currentHours >= 12 ? 'م' : 'ص';
+            let currentHours12 = currentHours % 12;
+            currentHours12 = currentHours12 ? currentHours12 : 12;
+            document.getElementById('current-digital-clock').innerText = 
+                `${currentPeriod} ${String(currentHours12).padStart(2, '0')}:${String(currentMinutes).padStart(2, '0')}:${String(currentSeconds).padStart(2, '0')}`;
+
+            if (Object.keys(prayersData).length === 0) return;
+
             let nextPrayerKey = null;
             let minDiff = Infinity;
-            let isAthanTime = false;
+            let activePrayerForCounter = null;
+            let timeSinceAthan = -1;
 
+            // فحص الصلوات لتحديد الصلاة القادمة أو التي أذن لها حديثاً
             for (let key in prayersData) {
                 const [hours, minutes] = prayersData[key].time.split(':').map(Number);
                 const prayerDate = new Date();
@@ -330,9 +373,10 @@
 
                 let diff = prayerDate - now;
 
-                if (diff <= 0 && diff >= -60000) {
-                    nextPrayerKey = key;
-                    isAthanTime = true;
+                // إذا دخل وقت الأذن (من 0 إلى 30 دقيقة مضت)
+                if (diff <= 0 && diff >= -1800000) { 
+                    activePrayerForCounter = key;
+                    timeSinceAthan = Math.abs(diff);
                     break;
                 }
 
@@ -347,18 +391,58 @@
                 }
             }
 
-            if (!nextPrayerKey && !isAthanTime) {
-                nextPrayerKey = 'Fajr';
-                const [hours, minutes] = prayersData['Fajr'].time.split(':').map(Number);
-                const prayerDate = new Date();
-                prayerDate.setDate(prayerDate.getDate() + 1);
-                prayerDate.setHours(hours, minutes, 0, 0);
-                minDiff = prayerDate - now;
+            // معالجة فترة ما بعد العشاء وحتى منتصف الليل (11:59 م) وقبل الفجر
+            const [ishaHours, ishaMinutes] = prayersData['Isha'].time.split(':').map(Number);
+            const ishaDate = new Date();
+            ishaDate.setHours(ishaHours, ishaMinutes, 0, 0);
+
+            const midnight = new Date();
+            midnight.setHours(23, 59, 59, 999);
+
+            if (!activePrayerForCounter) {
+                // إذا تجاوزنا وقت العشاء وبقينا قبل منتصف الليل
+                if (now >= ishaDate && now <= midnight) {
+                    nextPrayerKey = 'Fajr'; // الصلاة القادمة هي الفجر
+                    // حساب الوقت المتبقي لفجر اليوم التالي
+                    const [fajrHours, fajrMinutes] = prayersData['Fajr'].time.split(':').map(Number);
+                    const nextFajrDate = new Date();
+                    nextFajrDate.setDate(nextFajrDate.getDate() + 1);
+                    nextFajrDate.setHours(fajrHours, fajrMinutes, 0, 0);
+                    minDiff = nextFajrDate - now;
+                } else if (!nextPrayerKey) {
+                    nextPrayerKey = 'Fajr';
+                    const [hours, minutes] = prayersData['Fajr'].time.split(':').map(Number);
+                    const prayerDate = new Date();
+                    prayerDate.setDate(prayerDate.getDate() + 1);
+                    prayerDate.setHours(hours, minutes, 0, 0);
+                    minDiff = prayerDate - now;
+                }
             }
 
+            // تحديث التظليل في الجدول
             document.querySelectorAll('.prayer-row').forEach(row => row.classList.remove('active-prayer-row'));
-            
-            if (nextPrayerKey) {
+
+            if (activePrayerForCounter) {
+                // حالة الأذان (العد التصاعدي لمدة نصف ساعة)
+                const rowElem = document.getElementById(`row-${activePrayerForCounter}`);
+                if (rowElem) rowElem.classList.add('active-prayer-row');
+                
+                document.getElementById('next-prayer-name').innerText = prayersData[activePrayerForCounter].name;
+                document.getElementById('next-prayer-time').innerText = format12Hour(prayersData[activePrayerForCounter].time);
+                
+                if (motivations[activePrayerForCounter]) {
+                    document.getElementById('motivation-text').innerText = motivations[activePrayerForCounter];
+                }
+
+                const passedHours = Math.floor(timeSinceAthan / (1000 * 60 * 60));
+                const passedMinutes = Math.floor((timeSinceAthan % (1000 * 60 * 60)) / (1000 * 60));
+                const passedSeconds = Math.floor((timeSinceAthan % (1000 * 60)) / 1000);
+
+                document.getElementById('countdown-timer').innerText = 
+                    `+ ${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}`;
+
+            } else if (nextPrayerKey) {
+                // حالة العد التنازلي الطبيعي للصلاة القادمة
                 const rowElem = document.getElementById(`row-${nextPrayerKey}`);
                 if (rowElem) rowElem.classList.add('active-prayer-row');
                 
@@ -368,11 +452,7 @@
                 if (motivations[nextPrayerKey]) {
                     document.getElementById('motivation-text').innerText = motivations[nextPrayerKey];
                 }
-            }
 
-            if (isAthanTime) {
-                document.getElementById('countdown-timer').innerText = "الآن 🕌";
-            } else {
                 const hoursLeft = Math.floor(minDiff / (1000 * 60 * 60));
                 const minutesLeft = Math.floor((minDiff % (1000 * 60 * 60)) / (1000 * 60));
                 const secondsLeft = Math.floor((minDiff % (1000 * 60)) / 1000);

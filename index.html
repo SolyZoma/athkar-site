@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منبر الأذكار ومواقيت الصلاة | بإشراف وتصميم / SolyZoma</title>
+    <title>منبر الأذكار ومواقيت الصلاة | إهداء من / سليم حازم بدوي</title>
     <style>
         body {
             font-family: Tahoma, sans-serif;
@@ -16,18 +16,13 @@
         header {
             background-color: #2c3e50;
             color: white;
-            padding: 15px 10px;
+            padding: 12px 10px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         header h1 {
-            font-size: 20px;
-            margin: 0 0 5px 0;
-        }
-        header p {
-            font-size: 13px;
+            font-size: 19px;
             margin: 0;
-            opacity: 0.9;
         }
         main {
             max-width: 650px;
@@ -39,7 +34,7 @@
             color: white;
             border-radius: 12px;
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
         .prayer-header {
@@ -49,14 +44,15 @@
             border-bottom: 1px solid rgba(255,255,255,0.2);
             padding-bottom: 8px;
         }
-        /* جملة تحفيزية للصلاة */
+        /* جملة تحفيزية للصلاة تتغير حسب الصلاة */
         .motivation-text {
-            font-size: 13px;
+            font-size: 14px;
             color: #f1c40f;
             margin-bottom: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 6px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 8px;
             border-radius: 6px;
+            font-weight: bold;
         }
         .prayer-grid {
             display: flex;
@@ -64,36 +60,40 @@
             gap: 10px;
             justify-content: space-between;
         }
-        /* صندوق الصلاة القادمة */
+        /* صندوق الصلاة القادمة (أكبر وأوضح وبخط عريض) */
         .next-prayer-box {
             flex: 1;
             min-width: 240px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.35);
             border-radius: 8px;
             padding: 15px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .next-prayer-box h3 {
-            margin: 0 0 8px 0;
-            font-size: 15px;
+            margin: 0 0 6px 0;
+            font-size: 16px;
             color: #f1c40f;
+            font-weight: bold;
         }
         .next-name {
-            font-size: 20px;
+            font-size: 23px;
             font-weight: bold;
-            margin: 3px 0;
+            margin: 4px 0;
+            color: #fff;
         }
         .next-time-val {
-            font-size: 16px;
-            color: #ddd;
-            margin-bottom: 5px;
+            font-size: 18px;
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 8px;
+            direction: ltr; /* لضمان ظهور ص/م يسار الوقت بشكل صحيح */
         }
         .countdown {
-            font-size: 18px;
+            font-size: 20px;
             font-family: monospace;
             color: #2ecc71;
             font-weight: bold;
@@ -110,19 +110,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 8px;
+            padding: 7px 10px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 15px;
+            font-size: 16px;
             border-radius: 6px;
             transition: background 0.3s;
+        }
+        .prayer-row span:last-child {
+            direction: ltr; /* جعل ص أو م يسار الأرقام */
+            font-weight: bold;
         }
         .prayer-row:last-child {
             border-bottom: none;
         }
         /* تنسيق تظليل الصلاة القادمة في الجدول */
         .active-prayer-row {
-            background-color: rgba(241, 196, 15, 0.25);
+            background-color: rgba(241, 196, 15, 0.3);
             border-right: 4px solid #f1c40f;
+            font-weight: bold;
         }
         /* بطاقات الأذكار */
         section {
@@ -162,24 +167,29 @@
         }
         footer {
             margin-top: 20px;
-            color: #777;
-            font-size: 13px;
+            padding: 10px;
+            color: #555;
+            font-size: 14px;
+            font-weight: bold;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>منبر الأذكار ومواقيت الصلاة | بإشراف وتصميم / SolyZoma</h1>
-        <p>صدقة جارية لي ولكم ولجميع المسلمين</p>
+        <h1>منبر الأذكار ومواقيت الصلاة | إهداء من / سليم حازم بدوي</h1>
     </header>
 
     <main>
         <!-- قسم مواقيت الصلاة والعد التنازلي -->
         <div class="prayer-container">
             <div class="prayer-header">🕌 مواقيت الصلاة (الإسكندرية)</div>
-            <!-- جملة تحفيزية للصلاة -->
-            <div class="motivation-text">"إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا.</div>
+            
+            <!-- جملة تحفيزية تتغير حسب الصلاة القادمة -->
+            <div id="motivation-text" class="motivation-text">جاري التحميل...</div>
             
             <div class="prayer-grid">
                 <!-- الصلاة القادمة والعداد -->
@@ -203,7 +213,7 @@
 
         <!-- قسم الذكر المتجدد تلقائياً -->
         <section class="daily-athkar">
-            <h2> ذكر اللحظة (يتجدد تلقائياً)</h2>
+            <h2>✨ ذكر اللحظة (يتجدد تلقائياً)</h2>
             <pre id="random-athkar">جاري تحميل الذكر...</pre>
         </section>
 
@@ -229,11 +239,11 @@
     </main>
 
     <footer>
-        <p>نسألكم الدعاء بظهر الغيب</p>
+        <p>❤️ صدقة جارية لي ولكم ولجميع المسلمين - نسألكم الدعاء بظهر الغيب</p>
     </footer>
 
     <script>
-        // سكريبت الأذكار
+        // سكريبت الأذكار المتغيرة
         const athkarList = [
             "سبحان الله وبحمده، سبحان الله العظيم.",
             "لا إله إلا الله وحدَهُ لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.",
@@ -250,15 +260,25 @@
         displayRandomAthkar();
         setInterval(displayRandomAthkar, 15000);
 
+        // الجمل التحفيزية الخاصة بكل صلاة
+        const motivations = {
+            Fajr: "🌅 ركعتا الفجر خير من الدنيا وما فيها.. إبدأ يومك بطاعة الله تنر بصيرتك.",
+            Sunrise: "☀️ اذكر الله واحمده على نعمة يوم جديد وعمر ممدود.",
+            Dhuhr: "⏳ استعن على صخب العمل بصلاة الظهر، فنحن بحاجة لرحمة الله وسط اليوم.",
+            Asr: "حافظ على صلاة العصر فإن من تركها فقد حبط عمله.. كن من المحافظين.",
+            Maghrib: "🌇 مع غروب الشمس، أقبل على صلاة المغرب بقلب خاشع مستغفر.",
+            Isha: "🌙 اختم يومك بسكينة صلاة العشاء وقيام الليل لتنام في حفظ الله ورعايته."
+        };
+
         let prayersData = {};
 
-        // تحويل الوقت من نظام 24 ساعة إلى نظام 12 ساعة مع (ص / م)
+        // تحويل الوقت لنظام 12 ساعة مع جعل (ص / م) على اليسار
         function format12Hour(time24) {
             if (!time24) return "--:--";
             let [hours, minutes] = time24.split(':').map(Number);
             let period = hours >= 12 ? 'م' : 'ص';
             hours = hours % 12;
-            hours = hours ? hours : 12; // الساعة 12 بدلاً من 0
+            hours = hours ? hours : 12; 
             return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`;
         }
 
@@ -277,7 +297,6 @@
                     Isha: { name: 'العشاء', time: timings.Isha }
                 };
 
-                // عرض الأوقات بصيغة 12 ساعة (ص / م) في الجدول
                 document.getElementById('Fajr').innerText = format12Hour(timings.Fajr);
                 document.getElementById('Sunrise').innerText = format12Hour(timings.Sunrise);
                 document.getElementById('Dhuhr').innerText = format12Hour(timings.Dhuhr);
@@ -300,7 +319,6 @@
             let minDiff = Infinity;
             let isAthanTime = false;
 
-            // فحص إحداثيات الوقت الحالي مقارنة بالصلوات
             for (let key in prayersData) {
                 const [hours, minutes] = prayersData[key].time.split(':').map(Number);
                 const prayerDate = new Date();
@@ -342,12 +360,15 @@
             if (nextPrayerKey) {
                 const rowElem = document.getElementById(`row-${nextPrayerKey}`);
                 if (rowElem) rowElem.classList.add('active-prayer-row');
-            }
-
-            // عرض اسم الصلاة ووقتها في صندوق الصلاة القادمة
-            if (nextPrayerKey) {
+                
+                // تحديث بيانات الصلاة القادمة
                 document.getElementById('next-prayer-name').innerText = prayersData[nextPrayerKey].name;
                 document.getElementById('next-prayer-time').innerText = format12Hour(prayersData[nextPrayerKey].time);
+                
+                // تحديث الجملة التحفيزية المرتبطة بالصلاة القادمة
+                if (motivations[nextPrayerKey]) {
+                    document.getElementById('motivation-text').innerText = motivations[nextPrayerKey];
+                }
             }
 
             // التعامل مع حالة الأذان (الآن) أو العد التنازلي

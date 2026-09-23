@@ -33,7 +33,7 @@
             max-width: 650px;
             margin: 0 auto;
         }
-        /* تصميم قسم مواقيت الصلاة الجديد */
+        /* تصميم قسم مواقيت الصلاة */
         .prayer-container {
             background: linear-gradient(135deg, #1b365d, #2c3e50);
             color: white;
@@ -55,7 +55,7 @@
             gap: 10px;
             justify-content: space-between;
         }
-        /* صندوق الصلاة القادمة */
+        /* صندوق الصلاة القادمة والعداد */
         .next-prayer-box {
             flex: 1;
             min-width: 240px;
@@ -102,6 +102,10 @@
         }
         .prayer-row:last-child {
             border-bottom: none;
+        }
+        .highlight-prayer {
+            color: #f1c40f;
+            font-weight: bold;
         }
         /* بطاقات الأذكار */
         section {
@@ -156,29 +160,29 @@
     <main>
         <!-- قسم مواقيت الصلاة والعد التنازلي -->
         <div class="prayer-container">
-            <div class="prayer-header">🕌 مواقيت الصلاة (القاهرة)</div>
+            <div class="prayer-header">🕌 مواقيت الصلاة (الإسكندرية)</div>
             <div class="prayer-grid">
                 <!-- الصلاة القادمة والعداد -->
                 <div class="next-prayer-box">
                     <h3>الصلاة القادمة</h3>
-                    <div id="next-prayer-name" class="next-name">جاري التحميل...</div>
+                    <div id="next-prayer-name" class="next-name">جاري التحديد...</div>
                     <div id="countdown-timer" class="countdown">--:--:--</div>
                 </div>
                 <!-- جدول الأوقات -->
                 <div class="prayer-times-list" id="times-list">
-                    <div class="prayer-row"><span>الفجر</span><span id="Fajr">--:--</span></div>
-                    <div class="prayer-row"><span>الشروق</span><span id="Sunrise">--:--</span></div>
-                    <div class="prayer-row"><span>الظهر</span><span id="Dhuhr">--:--</span></div>
-                    <div class="prayer-row"><span>العصر</span><span id="Asr">--:--</span></div>
-                    <div class="prayer-row"><span>المغرب</span><span id="Maghrib">--:--</span></div>
-                    <div class="prayer-row"><span>العشاء</span><span id="Isha">--:--</span></div>
+                    <div class="prayer-row"><span id="label-Fajr">الفجر</span><span id="Fajr">--:--</span></div>
+                    <div class="prayer-row"><span id="label-Sunrise">الشروق</span><span id="Sunrise">--:--</span></div>
+                    <div class="prayer-row"><span id="label-Dhuhr">الظهر</span><span id="Dhuhr">--:--</span></div>
+                    <div class="prayer-row"><span id="label-Asr">العصر</span><span id="Asr">--:--</span></div>
+                    <div class="prayer-row"><span id="label-Maghrib">المغرب</span><span id="Maghrib">--:--</span></div>
+                    <div class="prayer-row"><span id="label-Isha">العشاء</span><span id="Isha">--:--</span></div>
                 </div>
             </div>
         </div>
 
         <!-- قسم الذكر المتجدد تلقائياً -->
         <section class="daily-athkar">
-            <h2>✨ ذكر اللحظة (يتجدد تلقائياً)</h2>
+            <h2> ذكر اللحظة (يتجدد تلقائياً)</h2>
             <pre id="random-athkar">جاري تحميل الذكر...</pre>
         </section>
 
@@ -208,7 +212,7 @@
     </footer>
 
     <script>
-        // سكريبت الأذكار والتحديث التلقائي
+        // سكريبت الأذكار والتحديث
         const athkarList = [
             "سبحان الله وبحمده، سبحان الله العظيم.",
             "لا إله إلا الله وحدَهُ لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.",
@@ -225,13 +229,25 @@
         displayRandomAthkar();
         setInterval(displayRandomAthkar, 10000);
 
-        // سكريبت جلب مواقيت الصلاة من API مجاني (خاص بمدينتي القاهرة كمثال)
+        // متغيرات مواقيت الصلاة
+        let prayersData = {};
+
         async function fetchPrayerTimes() {
             try {
-                // رابط API رسمي ومجاني لمواقيت الصلاة في القاهرة، مصر
-                const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Cairo&country=Egypt&method=5');
+                // جلب المواقيت لمدينة الإسكندرية، مصر
+                const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Alexandria&country=Egypt&method=5');
                 const data = await response.json();
                 const timings = data.data.timings;
+
+                // أسماء الصلوات بالعربي للعرض
+                prayersData = {
+                    Fajr: { name: 'الفجر', time: timings.Fajr },
+                    Sunrise: { name: 'الشروق', time: timings.Sunrise },
+                    Dhuhr: { name: 'الظهر', time: timings.Dhuhr },
+                    Asr: { name: 'العصر', time: timings.Asr },
+                    Maghrib: { name: 'المغرب', time: timings.Maghrib },
+                    Isha: { name: 'العشاء', time: timings.Isha }
+                };
 
                 // عرض الأوقات في الجدول
                 document.getElementById('Fajr').innerText = timings.Fajr;
@@ -241,10 +257,61 @@
                 document.getElementById('Maghrib').innerText = timings.Maghrib;
                 document.getElementById('Isha').innerText = timings.Isha;
 
+                updateCountdown();
+                setInterval(updateCountdown, 1000); // تحديث العد التنازلي كل ثانية
+
             } catch (error) {
                 console.log("خطأ في جلب المواقيت", error);
+                document.getElementById('next-prayer-name').innerText = "تعذر الجلب";
             }
         }
+
+        function updateCountdown() {
+            const now = new Date();
+            let nextPrayerKey = null;
+            let minDiff = Infinity;
+
+            // حساب أوقات الصلوات اليوم ومقارنتها بالوقت الحالي
+            for (let key in prayersData) {
+                const [hours, minutes] = prayersData[key].time.split(':').map(Number);
+                const prayerDate = new Date();
+                prayerDate.setHours(hours, minutes, 0, 0);
+
+                let diff = prayerDate - now;
+                // إذا وقت الصلاة عدى النهاردة، يبقى المقصود صلاة الفجر في اليوم التالي
+                if (diff < 0 && key === 'Isha') {
+                    prayerDate.setDate(prayerDate.getDate() + 1);
+                    diff = prayerDate - now;
+                }
+
+                if (diff > 0 && diff < minDiff) {
+                    minDiff = diff;
+                    nextPrayerKey = key;
+                }
+            }
+
+            // لو مفيش صلاة قادمة النهاردة تاني (افتراضياً الفجر بكرة)
+            if (!nextPrayerKey) {
+                nextPrayerKey = 'Fajr';
+                const [hours, minutes] = prayersData['Fajr'].time.split(':').map(Number);
+                const prayerDate = new Date();
+                prayerDate.setDate(prayerDate.getDate() + 1);
+                prayerDate.setHours(hours, minutes, 0, 0);
+                minDiff = prayerDate - now;
+            }
+
+            // عرض الصلاة القادمة
+            document.getElementById('next-prayer-name').innerText = prayersData[nextPrayerKey].name;
+
+            // حساب الساعات والدقائق والثواني المتبقية للعداد التنازلي
+            const hoursLeft = Math.floor(minDiff / (1000 * 60 * 60));
+            const minutesLeft = Math.floor((minDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const secondsLeft = Math.floor((minDiff % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown-timer').innerText = 
+                `بعد ${String(hoursLeft).padStart(2, '0')}:${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}`;
+        }
+
         fetchPrayerTimes();
     </script>
 

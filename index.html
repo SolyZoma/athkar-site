@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أذكاري - صدقة جارية</title>
+    <title>منبر الأذكار ومواقيت الصلاة | بإشراف SolyZoma</title>
     <style>
         body {
             font-family: Tahoma, sans-serif;
@@ -30,9 +30,80 @@
             opacity: 0.9;
         }
         main {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
+        /* تصميم قسم مواقيت الصلاة الجديد */
+        .prayer-container {
+            background: linear-gradient(135deg, #1b365d, #2c3e50);
+            color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .prayer-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+        }
+        .prayer-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        /* صندوق الصلاة القادمة */
+        .next-prayer-box {
+            flex: 1;
+            min-width: 240px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .next-prayer-box h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #f1c40f;
+        }
+        .next-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .countdown {
+            font-size: 20px;
+            font-family: monospace;
+            color: #2ecc71;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        /* جدول مواقيت الصلوات */
+        .prayer-times-list {
+            flex: 1;
+            min-width: 240px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+        .prayer-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 16px;
+        }
+        .prayer-row:last-child {
+            border-bottom: none;
+        }
+        /* بطاقات الأذكار */
         section {
             background: white;
             padding: 15px;
@@ -55,12 +126,10 @@
             line-height: 1.8; 
             color: #222;
         }
-        /* تصميم بطاقة الذكر المتجدد التلقائي */
         .daily-athkar {
             background: linear-gradient(135deg, #2c3e50, #3498db);
             color: white;
             text-align: center;
-            transition: all 0.5s ease;
         }
         .daily-athkar h2 {
             color: #f1c40f;
@@ -80,15 +149,36 @@
 <body>
 
     <header>
-        <!-- عنوان مخصص يحمل بصمتك -->
-        <h1>موقع أذكاري يرحب بكم | بإشراف وتصميم / سليم و حازم بدوي</h1>
+        <h1>منبر الأذكار ومواقيت الصلاة | بإشراف وتصميم / SolyZoma</h1>
         <p>صدقة جارية لي ولكم ولجميع المسلمين</p>
     </header>
 
     <main>
-        <!-- قسم الذكر المتجدد تلقائياً كل 15 ثانية -->
+        <!-- قسم مواقيت الصلاة والعد التنازلي -->
+        <div class="prayer-container">
+            <div class="prayer-header">🕌 مواقيت الصلاة (القاهرة)</div>
+            <div class="prayer-grid">
+                <!-- الصلاة القادمة والعداد -->
+                <div class="next-prayer-box">
+                    <h3>الصلاة القادمة</h3>
+                    <div id="next-prayer-name" class="next-name">جاري التحميل...</div>
+                    <div id="countdown-timer" class="countdown">--:--:--</div>
+                </div>
+                <!-- جدول الأوقات -->
+                <div class="prayer-times-list" id="times-list">
+                    <div class="prayer-row"><span>الفجر</span><span id="Fajr">--:--</span></div>
+                    <div class="prayer-row"><span>الشروق</span><span id="Sunrise">--:--</span></div>
+                    <div class="prayer-row"><span>الظهر</span><span id="Dhuhr">--:--</span></div>
+                    <div class="prayer-row"><span>العصر</span><span id="Asr">--:--</span></div>
+                    <div class="prayer-row"><span>المغرب</span><span id="Maghrib">--:--</span></div>
+                    <div class="prayer-row"><span>العشاء</span><span id="Isha">--:--</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الذكر المتجدد تلقائياً -->
         <section class="daily-athkar">
-            <h2> ذكر اللحظة (يتجدد تلقائياً)</h2>
+            <h2>✨ ذكر اللحظة (يتجدد تلقائياً)</h2>
             <pre id="random-athkar">جاري تحميل الذكر...</pre>
         </section>
 
@@ -111,44 +201,51 @@
 - أعوذ بكلمات الله التامات من شر ما خلق. (3 مرات)
             </pre>
         </section>
-
-        <!-- قسم التسبيح والاستغفار -->
-        <section>
-            <h2>📿 الاستغفار والتسبيح</h2>
-            <pre>
-- استغفر الله العظيم وأتوب إليه. (100 مرة)
-- سبحان الله وبحمده، سبحان الله العظيم.
-- لا حول ولا قوة إلا بالله العلي العظيم.
-            </pre>
-        </section>
     </main>
 
     <footer>
-        <p>نسألكم الدعاء بالتوفيق دائما</p>
+        <p>نسألكم الدعاء بظهر الغيب</p>
     </footer>
 
-    <!-- كود الجافاسكريبت للتحديث التلقائي كل 15 ثانية -->
     <script>
+        // سكريبت الأذكار والتحديث التلقائي
         const athkarList = [
             "سبحان الله وبحمده، سبحان الله العظيم.",
             "لا إله إلا الله وحدَهُ لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.",
             "استغفر الله العظيم واتوب إليه.",
             "اللهم صل وسلم على نبينا محمد وعلى آله وصحبه أجمعين.",
             "لاحول ولا قوة إلا بالله العلي العظيم.",
-            "سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر.",
-            "رضيت بالله رباً، وبالإسلام ديناً، وبمحمد صلى الله عليه وسلم نبياً."
+            "سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر."
         ];
 
         function displayRandomAthkar() {
             const randomIndex = Math.floor(Math.random() * athkarList.length);
             document.getElementById("random-athkar").innerText = athkarList[randomIndex];
         }
-
-        // تشغيل الدالة فور فتح الصفحة
         displayRandomAthkar();
+        setInterval(displayRandomAthkar, 10000);
 
-        // تحديث الذكر تلقائياً كل 15 ثانية (15000 مللي ثانية)
-        setInterval(displayRandomAthkar, 15000);
+        // سكريبت جلب مواقيت الصلاة من API مجاني (خاص بمدينتي القاهرة كمثال)
+        async function fetchPrayerTimes() {
+            try {
+                // رابط API رسمي ومجاني لمواقيت الصلاة في القاهرة، مصر
+                const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Cairo&country=Egypt&method=5');
+                const data = await response.json();
+                const timings = data.data.timings;
+
+                // عرض الأوقات في الجدول
+                document.getElementById('Fajr').innerText = timings.Fajr;
+                document.getElementById('Sunrise').innerText = timings.Sunrise;
+                document.getElementById('Dhuhr').innerText = timings.Dhuhr;
+                document.getElementById('Asr').innerText = timings.Asr;
+                document.getElementById('Maghrib').innerText = timings.Maghrib;
+                document.getElementById('Isha').innerText = timings.Isha;
+
+            } catch (error) {
+                console.log("خطأ في جلب المواقيت", error);
+            }
+        }
+        fetchPrayerTimes();
     </script>
 
 </body>

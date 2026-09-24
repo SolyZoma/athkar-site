@@ -390,7 +390,7 @@
             let nextPrayerKey = null;
             let minDiff = Infinity;
             let activePrayerForCounter = null;
-            let timeSinceAthan = -1;
+            let isExactAthanTime = false; 
 
             for (let key in prayersData) {
                 const [hours, minutes] = prayersData[key].time.split(':').map(Number);
@@ -399,9 +399,16 @@
 
                 let diff = prayerDate - now;
 
+                // التحقق مما إذا كان الوقت الحالي هو وقت الأذان تماماً (أول دقيقة من دخول الصلاة من 0 إلى -60000 ميللي ثانية)
+                if (diff <= 0 && diff >= -60000) {
+                    activePrayerForCounter = key;
+                    isExactAthanTime = true;
+                    break;
+                }
+
+                // الوقت المنقضي العادي (أول نصف ساعة مثلاً أو حسب الحاجة)
                 if (diff <= 0 && diff >= -1800000) { 
                     activePrayerForCounter = key;
-                    timeSinceAthan = Math.abs(diff);
                     break;
                 }
 
@@ -427,7 +434,7 @@
 
             if (isAfterIshaLateNight) {
                 activePrayerForCounter = 'Isha';
-                timeSinceAthan = now - ishaDate;
+                isExactAthanTime = false; // بعد العشاء وحتى منتصف الليل يحسب الوقت المنقضي طبيعياً
             } else if (!activePrayerForCounter) {
                 if (now < startOfNightOrBeforeFajr(now, prayersData['Fajr'].time)) {
                     nextPrayerKey = 'Fajr';
@@ -466,7 +473,6 @@
 
             document.querySelectorAll('.prayer-row').forEach(row => row.classList.remove('active-prayer-row'));
 
-            // إذا كنا في فترة أول نصف ساعة من الصلاة أو بعد العشاء (حتى 11:59 م)، نعرض "قبل" (الوقت المنقضي)
             if (activePrayerForCounter) {
                 const rowElem = document.getElementById(`row-${activePrayerForCounter}`);
                 if (rowElem) rowElem.classList.add('active-prayer-row');
@@ -478,15 +484,20 @@
                     document.getElementById('motivation-text').innerText = motivations[activePrayerForCounter];
                 }
 
-                const passedHours = Math.floor(timeSinceAthan / (1000 * 60 * 60));
-                const passedMinutes = Math.floor((timeSinceAthan % (1000 * 60 * 60)) / (1000 * 60));
-                const passedSeconds = Math.floor((timeSinceAthan % (1000 * 60)) / 1000);
+                // إذا كان وقت الأذان تماماً (أول دقيقة)، نكتب كلمة "الآن" بدلاً من العد
+                if (isExactAthanTime) {
+                    document.getElementById('countdown-timer').innerHTML = `<span style="color: #f1c40f; font-size: 24px;">الآن</span>`;
+                } else {
+                    const timeSinceAthan = Math.abs(new Date() - new Date().setHours(...prayersData[activePrayerForCounter].time.split(':').map(Number), 0, 0));
+                    const passedHours = Math.floor(timeSinceAthan / (1000 * 60 * 60));
+                    const passedMinutes = Math.floor((timeSinceAthan % (1000 * 60 * 60)) / (1000 * 60));
+                    const passedSeconds = Math.floor((timeSinceAthan % (1000 * 60)) / 1000);
 
-                document.getElementById('countdown-timer').innerHTML = 
-                    `قبل <span class="time-digits">${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}</span>`;
+                    document.getElementById('countdown-timer').innerHTML = 
+                        `قبل <span class="time-digits">${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}</span>`;
+                }
 
             } else if (nextPrayerKey) {
-                // باقي الوقت (طالما لم يحن وقت الصلاة بعد)، نعرض كلمة "بعد" (العد التنازلي للصلاة القادمة)
                 const rowElem = document.getElementById(`row-${nextPrayerKey}`);
                 if (rowElem) rowElem.classList.add('active-prayer-row');
                 

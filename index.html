@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منبر الأذكار ومواقيت الصلاة | إهداء من / حازم وولده سليم حازم</title>
     <style>
-        /* دمج المحددات المشتركة لتقليل الكود وتسهيل الصيانة */
         body, header, section, footer {
             box-sizing: border-box;
         }
@@ -88,7 +87,6 @@
             border: 1px solid rgba(255,255,255,0.15);
         }
 
-        /* تصميم الساعة والتواريخ الجديدة المشابهة للصورة */
         .live-clock-inner {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 8px;
@@ -117,7 +115,6 @@
             text-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
-        /* دمج تنسيقات الأرقام والأوقات الأخرى */
         .next-time-val, .prayer-time-box, .time-digits {
             font-family: monospace;
             direction: ltr;
@@ -250,7 +247,6 @@
             
             <div class="prayer-grid">
                 <div class="next-prayer-box">
-                    <!-- لوحة الساعة والتواريخ الجديدة -->
                     <div class="live-clock-inner">
                         <div id="current-date-display" class="date-display">جاري تحميل التاريخ...</div>
                         <div class="live-clock-time" id="current-digital-clock">--:--:--</div>
@@ -376,7 +372,6 @@
         function updateClocks() {
             const now = new Date();
 
-            // تحديث التاريخ بصيغة تشبه الصورة (اليوم الميلادي الهجري)
             const options = { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Africa/Cairo' };
             const gregDateStr = now.toLocaleDateString('ar-EG', options);
             document.getElementById('current-date-display').innerText = `${gregDateStr}، ${hijriDateStr}`;
@@ -387,7 +382,6 @@
             let currentHours12 = currentHours % 12;
             currentHours12 = currentHours12 ? currentHours12 : 12;
             
-            // عرض الساعة بدون حرف ص/م داخل شاشة الرقم البارز تماماً مثل الصورة، أو معها حسب رغبتك (هنا رقم مباشر بـ 24 أو 12 ساعة)
             document.getElementById('current-digital-clock').innerText = 
                 `${String(currentHours12).padStart(2, '0')}:${String(currentMinutes).padStart(2, '0')}:${String(currentSeconds).padStart(2, '0')}`;
 
@@ -428,9 +422,6 @@
 
             const midnight = new Date();
             midnight.setHours(23, 59, 59, 999);
-
-            const startOfNextDay = new Date();
-            startOfNextDay.setHours(0, 0, 0, 0);
 
             let isAfterIshaLateNight = (now >= ishaDate && now <= midnight);
 
@@ -475,6 +466,7 @@
 
             document.querySelectorAll('.prayer-row').forEach(row => row.classList.remove('active-prayer-row'));
 
+            // إذا كنا في فترة أول نصف ساعة من الصلاة أو بعد العشاء (حتى 11:59 م)، نعرض "قبل" (الوقت المنقضي)
             if (activePrayerForCounter) {
                 const rowElem = document.getElementById(`row-${activePrayerForCounter}`);
                 if (rowElem) rowElem.classList.add('active-prayer-row');
@@ -494,6 +486,7 @@
                     `قبل <span class="time-digits">${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}</span>`;
 
             } else if (nextPrayerKey) {
+                // باقي الوقت (طالما لم يحن وقت الصلاة بعد)، نعرض كلمة "بعد" (العد التنازلي للصلاة القادمة)
                 const rowElem = document.getElementById(`row-${nextPrayerKey}`);
                 if (rowElem) rowElem.classList.add('active-prayer-row');
                 
@@ -509,7 +502,7 @@
                 const secondsLeft = Math.floor((minDiff % (1000 * 60)) / 1000);
 
                 document.getElementById('countdown-timer').innerHTML = 
-                    `قبل <span class="time-digits">${String(hoursLeft).padStart(2, '0')}:${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}</span>`;
+                    `بعد <span class="time-digits">${String(hoursLeft).padStart(2, '0')}:${String(minutesLeft).padStart(2, '0')}:${String(secondsLeft).padStart(2, '0')}</span>`;
             }
         }
 

@@ -494,7 +494,7 @@
                     const passedSeconds = Math.floor((timeSinceAthan % (1000 * 60)) / 1000);
 
                     document.getElementById('countdown-timer').innerHTML = 
-                        `قبل <span class="time-digits">${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}</span>`;
+                        `منذ <span class="time-digits">${String(passedHours).padStart(2, '0')}:${String(passedMinutes).padStart(2, '0')}:${String(passedSeconds).padStart(2, '0')}</span>`;
                 }
 
             } else if (nextPrayerKey) {

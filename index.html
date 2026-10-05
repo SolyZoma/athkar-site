@@ -11,7 +11,7 @@
 
         body {
             font-family: Tahoma, sans-serif;
-            background-color: #f9f9f9;
+            background: linear-gradient(135deg, #228c61, #1b4d3e);
             color: #333;
             margin: 0;
             padding: 10px;
@@ -19,11 +19,12 @@
         }
 
         header {
-            background-color: #2c3e50;
+            background-color: #34495e; /* كحلي فاتح */
             color: white;
             padding: 12px 10px;
             border-radius: 8px;
             margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
 
         header h1 {
@@ -37,7 +38,7 @@
         }
 
         .prayer-container {
-            background: linear-gradient(135deg, #1b365d, #2c3e50);
+            background: linear-gradient(135deg, #2c3e50, #3498db);
             color: white;
             border-radius: 12px;
             padding: 15px;
@@ -176,24 +177,25 @@
         }
 
         .active-prayer-row {
-            background-color: rgba(52, 152, 219, 0.4); /* تم التعديل إلى سكاي بلو شفاف */
-            border-right: 4px solid #3498db;             /* حافة جانبية باللون السماوي */
+            background-color: rgba(52, 152, 219, 0.4);
+            border-right: 4px solid #3498db;
             font-weight: bold;
         }
 
         section {
-            background: white;
+            background: linear-gradient(135deg, #2c3e50, #3498db); /* مثل ذكر اللحظة */
+            color: white;
             padding: 15px;
             margin: 10px auto;
             width: 100%;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             text-align: right;
         }
 
         section h2 {
             font-size: 18px;
-            color: #2c3e50;
+            color: #f1c40f;
             margin-top: 0;
         }
 
@@ -202,7 +204,8 @@
             white-space: pre-wrap; 
             font-size: 17px; 
             line-height: 1.8; 
-            color: #222;
+            color: white;
+            font-weight: bold;
         }
 
         .daily-athkar {
@@ -224,12 +227,12 @@
         footer {
             margin-top: 20px;
             padding: 10px;
-            color: #555;
+            color: #fff;
             font-size: 14px;
             font-weight: bold;
-            background: #fff;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
     </style>
 </head>
